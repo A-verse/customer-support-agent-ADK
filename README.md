@@ -9,7 +9,7 @@ This repository is designed to be read and understood. Routing, tool-level acces
 ```text
                     ┌─────────────────────────────────────────┐
 User ──────────────►│ root_agent (coordinator)                │
-                    │ gemini-3.1-pro-preview                  │
+                    │ gemini-3.7-flash                  │
                     │                                         │
                     │ routes ──┬─► BillingSpecialist           │
                     │           │    └─ lookup_invoice         │
@@ -38,15 +38,11 @@ With `sub_agents`, ADK transfers control to the specialist, which can reply to t
 
 See the `# ponytail:` comment on `root_agent` in `app/agent.py`.
 
-### 2. Two Models, on Purpose
+### 2. One Model, Different Roles
 
-| Role | Model | Why |
-| --- | --- | --- |
-| Coordinator | `gemini-3.1-pro-preview` | Routing and synthesis need judgment. |
-| Specialists | `gemini-3.7-flash` | Narrow tasks can use a faster, lower-cost model. |
+Both the coordinator and all specialists use `gemini-3.7-flash`. Their responsibilities differ through their instructions, tools, and access policies, rather than through separate models.
 
-The models are configured near the top of `app/agent.py` as `COORDINATOR_MODEL` and `WORKER_MODEL`.
-
+The model is configured near the top of `app/agent.py` as `COORDINATOR_MODEL` and `WORKER_MODEL`.
 ### 3. Access Control in Code, Not Just in the Prompt
 
 `ShippingSpecialist` must never access billing data. Two layers enforce this restriction:
